@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tablero de proposiciones al Plan Nacional de Desarrollo 2018-2022</title>
+  <meta name="description" content="Tablero de seguimiento de proposiciones al Plan Nacional de Desarrollo 2018-2022 (Ley 1955 de 2019): trazabilidad cronológica, filtros por congresista, partido, posición frente al Gobierno, cámara, entidad y tipo de proposición. Datos simulados con fines demostrativos.">
+  <meta name="color-scheme" content="light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23102A43'/%3E%3Crect x='6' y='17' width='5' height='9' fill='%23fcd116'/%3E%3Crect x='13.5' y='11' width='5' height='15' fill='%23ffffff'/%3E%3Crect x='21' y='6' width='5' height='20' fill='%23ce1126'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip" href="#contenido">Ir al contenido</a>
+  <div class="flag" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="masthead">
+    <div class="wrap masthead-in">
+      <div>
+        <h1>Proposiciones al Plan Nacional de Desarrollo 2018-2022</h1>
+        <p class="sub">Pacto por Colombia, Pacto por la Equidad · Ley 1955 de 2019 · Proyecto de Ley 311/2019 Cámara – 227/2019 Senado</p>
+      </div>
+      <p class="pill">Datos simulados</p>
+    </div>
+  </header>
+
+  <div class="aviso" role="note">
+    <div class="wrap">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v4.2M8 4.6v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <p>Este tablero es demostrativo: los registros son simulados y los nombres de los congresistas, ficticios. El calendario del trámite y la posición de los partidos frente al Gobierno provienen de información pública.</p>
+    </div>
+  </div>
+
+  <div class="filtros-wrap">
+    <form id="filtros" class="wrap filtros" aria-label="Filtros del tablero" onsubmit="return false">
+      <div class="f">
+        <label for="f-congresista">Congresista</label>
+        <select id="f-congresista"></select>
+      </div>
+      <div class="f">
+        <label for="f-partido">Partido</label>
+        <select id="f-partido"></select>
+      </div>
+      <fieldset class="f seg" id="f-posicion">
+        <legend>Gobierno / Oposición</legend>
+        <div class="segs" role="group"></div>
+      </fieldset>
+      <fieldset class="f seg" id="f-camara">
+        <legend>Cámara</legend>
+        <div class="segs" role="group"></div>
+      </fieldset>
+      <div class="f">
+        <label for="f-entidad">Entidad líder del análisis</label>
+        <select id="f-entidad"></select>
+      </div>
+      <div class="f">
+        <label for="f-tipo">Tipo de proposición</label>
+        <select id="f-tipo"></select>
+      </div>
+      <div class="f f-fecha">
+        <label for="f-desde">Recibida desde</label>
+        <input type="date" id="f-desde">
+      </div>
+      <div class="f f-fecha">
+        <label for="f-hasta">Recibida hasta</label>
+        <input type="date" id="f-hasta">
+      </div>
+      <div class="f acciones">
+        <button type="button" id="limpiar" class="btn">Limpiar filtros</button>
+        <button type="button" id="exportar" class="btn btn-sec">Descargar CSV</button>
+      </div>
+      <div class="estado-fila">
+        <p id="estado-filtros" class="estado" aria-live="polite"></p>
+        <ul id="chips" class="chips" aria-label="Filtros activos"></ul>
+      </div>
+    </form>
+  </div>
+
+  <main id="contenido" class="wrap">
+    <section id="resumen" aria-labelledby="t-resumen">
+      <h2 id="t-resumen">Conteo de favorabilidad</h2>
+      <p class="desc">La favorabilidad resume el estado de cada proposición: favorable (acogida total o aprobada), parcialmente favorable (acogida parcial), desfavorable (no acogida o negada), pendiente (en análisis) o retirada. Seleccione una categoría para filtrar.</p>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <section id="trazabilidad" aria-labelledby="t-traza">
+      <h2 id="t-traza">Trazabilidad cronológica</h2>
+      <p class="desc">Proposiciones recibidas por semana a lo largo del trámite del proyecto. Los círculos numerados marcan los hitos del proceso legislativo. Seleccione una semana para filtrar por fecha de recepción.</p>
+      <article class="card" id="card-timeline">
+        <header class="card-h">
+          <div>
+            <p class="cap">Número de proposiciones recibidas por semana, según favorabilidad</p>
+            <div class="legend" data-legend></div>
+          </div>
+          <button type="button" class="link" id="vista-timeline" aria-pressed="false">Ver tabla</button>
+        </header>
+        <div id="timeline" class="timeline"></div>
+        <div id="timeline-tabla" class="tabla-alt" hidden></div>
+        <ol id="hitos" class="hitos"></ol>
+      </article>
+
+      <h3 class="h3-lista" id="t-lista">Registro cronológico de proposiciones</h3>
+      <p class="desc">Ordenado por fecha y hora de recepción. Despliegue una fila para ver la trazabilidad de la proposición, su texto, conceptos y el impacto fiscal estimado.</p>
+      <div class="tabla-wrap">
+        <table class="registro" id="registro" aria-describedby="t-lista">
+          <caption class="sr-only">Registro cronológico de proposiciones al Plan Nacional de Desarrollo</caption>
+          <thead>
+            <tr>
+              <th scope="col"><span class="sr-only">Detalle</span></th>
+              <th scope="col">Recepción</th>
+              <th scope="col">Proposición</th>
+              <th scope="col">Congresista</th>
+              <th scope="col">Posición</th>
+              <th scope="col">Artículo afectado</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="registro-cuerpo"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="desgloses" aria-labelledby="t-desg">
+      <h2 id="t-desg">Favorabilidad según congresista, partido, posición, cámara, entidad y tipo</h2>
+      <p class="desc">Cada barra muestra cuántas proposiciones hay en la categoría y cómo se reparten por favorabilidad, dentro de los filtros activos. Seleccione una barra para filtrar.</p>
+      <div class="legend legend-sec" data-legend></div>
+      <div class="grid2" id="desgloses-grid"></div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <div class="wrap">
+      <p><strong>Nota metodológica.</strong> Los registros (proposiciones, conceptos, impactos fiscales y radicados) son simulados con fines demostrativos y los nombres de los congresistas son ficticios. El calendario del trámite (radicación del proyecto el 6-feb-2019, primer debate en comisiones económicas conjuntas el 22-mar-2019, plenarias el 2-may-2019 y sanción el 25-may-2019) y la posición de los partidos frente al Gobierno (Estatuto de la Oposición, Ley 1909 de 2018) se basan en información pública. Los enlaces de cada registro apuntan a documentos de referencia del trámite, no a las proposiciones simuladas.</p>
+      <p>Este sitio no es un canal oficial del Congreso de la República ni del Departamento Nacional de Planeación. <span id="generado"></span></p>
+    </div>
+  </footer>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <noscript><p class="wrap" style="padding:1rem 0">Este tablero requiere JavaScript para mostrar los filtros y los gráficos.</p></noscript>
+  <script src="data/proposiciones.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
